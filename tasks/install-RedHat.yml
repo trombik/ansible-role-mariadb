@@ -1,0 +1,28 @@
+---
+
+- name: Install mariadb
+  yum:
+    name: "{{ mariadb_package }}"
+    state: present
+
+- name: Install mariadb_ansible_packages, required by ansible
+  yum:
+    name: "{{ mariadb_ansible_packages }}"
+
+- name: Enable mariadb
+  service:
+    name: "{{ mariadb_service }}"
+    enabled: yes
+
+- name: Create systemd conf file directory
+  file:
+    path: "/etc/systemd/system/{{ mariadb_service }}.service.d"
+    state: directory
+
+- name: Create systemd conf file
+  template:
+    src: RedHat.systemd.conf.j2
+    dest: "/etc/systemd/system/{{ mariadb_service }}.service.d/default.conf"
+  notify:
+    - Restart mariadb
+    - Reload systemd
