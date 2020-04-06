@@ -1,0 +1,9 @@
+---
+mariadb_user: mariadb
+mariadb_group: mariadb
+mariadb_log_dir: /var/log/mariadb
+mariadb_db_dir: "{{ __mariadb_db_dir }}"
+mariadb_service: mariadb
+mariadb_conf_dir: "{{ __mariadb_conf_dir }}"
+mariadb_conf_file: "{{ __mariadb_conf_dir }}/mariadb.conf"
+mariadb_flags: ""

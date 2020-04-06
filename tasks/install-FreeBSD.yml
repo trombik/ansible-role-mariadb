@@ -1,0 +1,6 @@
+---
+
+- name: Install mariadb
+  pkgng:
+    name: mariadb
+    state: present

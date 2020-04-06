@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  roles:
+    - ansible-role-mariadb
+  vars:
+    mariadb_config: ""

@@ -1,0 +1,3 @@
+---
+__mariadb_db_dir: /var/db/mariadb
+__mariadb_conf_dir: /usr/local/etc/mariadb
