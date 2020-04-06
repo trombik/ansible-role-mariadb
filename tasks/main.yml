@@ -6,6 +6,12 @@
 - name: "Include tasks/install-{{ ansible_os_family }}.yml"
   include: "install-{{ ansible_os_family }}.yml"
 
+- name: Create mariadb_conf_dir
+  file:
+    path: "{{ mariadb_conf_dir }}"
+    mode: 0755
+    state: directory
+
 - name: Create mariadb.conf
   template:
     src: my.cnf.j2
@@ -22,8 +28,8 @@
   wait_for:
     port: 3306
 
-- name: Include set-root-password
-  include_tasks: set-root-password.yml
+- name: "Include set-root-password-{{ mariadb_family }}-{{ ansible_os_family }}.yml"
+  include_tasks: "set-root-password-{{ mariadb_family }}-{{ ansible_os_family }}.yml"
 
 - name: Do flush_handlers
   meta: flush_handlers

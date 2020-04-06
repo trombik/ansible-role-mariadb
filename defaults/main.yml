@@ -13,3 +13,4 @@ mariadb_flags: ""
 
 mariadb_root_password: ""
 mariadb_my_cnf_files: []
+mariadb_family: "{{ __mariadb_family }}"

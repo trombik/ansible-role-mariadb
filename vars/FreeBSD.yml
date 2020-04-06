@@ -1,9 +1,10 @@
 ---
 __mariadb_user: mysql
 __mariadb_group: mysql
-__mariadb_package: databases/mysql57-server
+__mariadb_package: databases/mariadb101-server
 __mariadb_ansible_packages:
   - databases/py-pymysql
 __mariadb_service: mysql-server
 __mariadb_db_dir: /var/db/mysql
 __mariadb_conf_dir: /usr/local/etc/mysql
+__mariadb_family: mariadb

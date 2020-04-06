@@ -15,7 +15,7 @@ users = [
 
 case os[:family]
 when "freebsd"
-  package = "databases/mariadb101-server"
+  package = "databases/mysql57-server"
   config_dir = "/usr/local/etc/mysql"
   db_dir = "/var/db/mysql"
 end
