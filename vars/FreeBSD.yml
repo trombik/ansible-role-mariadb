@@ -7,4 +7,5 @@ __mariadb_ansible_packages:
 __mariadb_service: mysql-server
 __mariadb_db_dir: /var/db/mysql
 __mariadb_conf_dir: /usr/local/etc/mysql
+__mariadb_conf_file: "{{ __mariadb_conf_dir }}/my.cnf"
 __mariadb_family: mariadb
