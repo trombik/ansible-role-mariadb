@@ -1,8 +1,8 @@
 require "spec_helper"
 require "serverspec"
 
-package = "mysql"
-service = "mysql-server"
+package = "mysql-server"
+service = "mysql"
 config_dir = "/etc/mysql"
 # user    = "mysql"
 # group   = "mysql"
@@ -13,6 +13,7 @@ case os[:family]
 when "freebsd"
   package = "databases/mysql57-server"
   config_dir = "/usr/local/etc/mysql"
+  service = "mysql-server"
   # db_dir = "/var/db/mysql"
 end
 config = "#{config_dir}/my.cnf"
