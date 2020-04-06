@@ -23,6 +23,10 @@
   template:
     src: RedHat.systemd.conf.j2
     dest: "/etc/systemd/system/{{ mariadb_service }}.service.d/default.conf"
+  register: __systemd_mariadb_conf
   notify:
     - Restart mariadb
-    - Reload systemd
+
+- name: Run systemd daemon_reload
+  command: systemctl daemon-reload
+  when: __systemd_mariadb_conf.changed

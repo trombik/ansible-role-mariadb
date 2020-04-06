@@ -13,5 +13,4 @@
     port: 3306
 
 - name: Reload systemd
-  systemd:
-    daemon_reload: yes
+  command: systemctl daemon-reload
