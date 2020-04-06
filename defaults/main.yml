@@ -7,7 +7,7 @@ mariadb_service: "{{ __mariadb_service }}"
 mariadb_package: "{{ __mariadb_package }}"
 mariadb_ansible_packages: "{{ __mariadb_ansible_packages }}"
 mariadb_conf_dir: "{{ __mariadb_conf_dir }}"
-mariadb_conf_file: "{{ __mariadb_conf_dir }}/my.cnf"
+mariadb_conf_file: "{{ __mariadb_conf_file }}"
 mariadb_config: ""
 mariadb_flags: ""
 

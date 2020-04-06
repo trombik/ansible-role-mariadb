@@ -3,71 +3,135 @@
   roles:
     - ansible-role-mariadb
   vars:
-    mariadb_config: |
-      [client]
-      port                            = 3306
-      socket                          = /tmp/mysql.sock
+    os_mariadb_flags:
+      FreeBSD: ""
+      Debian: |
+        [Service]
+    mariadb_flags: "{{ os_mariadb_flags[ansible_os_family] }}"
+    os_project_socket:
+      FreeBSD: /tmp/mysql.sock
+      Debian: /var/run/mysqld/mysqld.sock
+    project_socket: "{{ os_project_socket[ansible_os_family] }}"
 
-      [mysql]
-      prompt                          = \u@\h [\d]>\_
-      no_auto_rehash
+    os_project_basedir:
+      FreeBSD: /usr/local
+      Debian: /usr
+    project_basedir: "{{ os_project_basedir[ansible_os_family] }}"
 
-      [mysqld]
-      user                            = mysql
-      port                            = 3306
-      socket                          = /tmp/mysql.sock
-      bind-address                    = 127.0.0.1
-      basedir                         = /usr/local
-      datadir                         = {{ mariadb_db_dir }}
-      # tmpdir                          = /var/db/mysql_tmpdir
-      # slave-load-tmpdir               = /var/db/mysql_tmpdir
-      # secure-file-priv                = /var/db/mysql_secure
-      log-bin                         = mysql-bin
-      log-output                      = TABLE
-      # master-info-repository          = TABLE
-      # relay-log-info-repository       = TABLE
-      relay-log-recovery              = 1
-      slow-query-log                  = 1
-      server-id                       = 1
-      sync_binlog                     = 1
-      sync_relay_log                  = 1
-      binlog_cache_size               = 16M
-      expire_logs_days                = 30
-      # default_password_lifetime       = 0
-      # enforce-gtid-consistency        = 1
-      # gtid-mode                       = ON
-      safe-user-create                = 1
-      lower_case_table_names          = 1
-      explicit-defaults-for-timestamp = 1
-      myisam-recover-options          = BACKUP,FORCE
-      open_files_limit                = 32768
-      table_open_cache                = 16384
-      table_definition_cache          = 8192
-      net_retry_count                 = 16384
-      key_buffer_size                 = 256M
-      max_allowed_packet              = 64M
-      query_cache_type                = 0
-      query_cache_size                = 0
-      long_query_time                 = 0.5
+    os_mariadb_config:
+      FreeBSD: |
+        [client]
+        port                            = 3306
+        socket                          = {{ project_socket }}
 
-      # use 1M in innodb_buffer_pool_size, instead of 1G
-      innodb_buffer_pool_size         = 1M
-      innodb_data_home_dir            = /var/db/mysql
-      innodb_log_group_home_dir       = /var/db/mysql
-      innodb_data_file_path           = ibdata1:128M:autoextend
-      # innodb_temp_data_file_path      = ibtmp1:128M:autoextend
-      innodb_flush_method             = O_DIRECT
-      innodb_log_file_size            = 256M
-      innodb_log_buffer_size          = 16M
-      innodb_write_io_threads         = 8
-      innodb_read_io_threads          = 8
-      innodb_autoinc_lock_mode        = 2
-      skip-symbolic-links
+        [mysql]
+        prompt                          = \u@\h [\d]>\_
+        no_auto_rehash
 
-      [mysqldump]
-      max_allowed_packet              = 256M
-      quote_names
-      quick
+        [mysqld]
+        user                            = mysql
+        port                            = 3306
+        socket                          = {{ project_socket }}
+        bind-address                    = 127.0.0.1
+        basedir                         = {{ project_basedir }}
+        datadir                         = {{ mariadb_db_dir }}
+        # tmpdir                          = /var/db/mysql_tmpdir
+        # slave-load-tmpdir               = /var/db/mysql_tmpdir
+        # secure-file-priv                = /var/db/mysql_secure
+        log-bin                         = mysql-bin
+        log-output                      = TABLE
+        # master-info-repository          = TABLE
+        # relay-log-info-repository       = TABLE
+        relay-log-recovery              = 1
+        slow-query-log                  = 1
+        server-id                       = 1
+        sync_binlog                     = 1
+        sync_relay_log                  = 1
+        binlog_cache_size               = 16M
+        expire_logs_days                = 30
+        # default_password_lifetime       = 0
+        # enforce-gtid-consistency        = 1
+        # gtid-mode                       = ON
+        safe-user-create                = 1
+        lower_case_table_names          = 1
+        explicit-defaults-for-timestamp = 1
+        myisam-recover-options          = BACKUP,FORCE
+        open_files_limit                = 32768
+        table_open_cache                = 16384
+        table_definition_cache          = 8192
+        net_retry_count                 = 16384
+        key_buffer_size                 = 256M
+        max_allowed_packet              = 64M
+        query_cache_type                = 0
+        query_cache_size                = 0
+        long_query_time                 = 0.5
+
+        # use 1M in innodb_buffer_pool_size, instead of 1G
+        innodb_buffer_pool_size         = 1M
+        innodb_data_home_dir            = {{ mariadb_db_dir }}
+        innodb_log_group_home_dir       = {{ mariadb_db_dir }}
+        innodb_data_file_path           = ibdata1:128M:autoextend
+        # innodb_temp_data_file_path      = ibtmp1:128M:autoextend
+        innodb_flush_method             = O_DIRECT
+        innodb_log_file_size            = 256M
+        innodb_log_buffer_size          = 16M
+        innodb_write_io_threads         = 8
+        innodb_read_io_threads          = 8
+        innodb_autoinc_lock_mode        = 2
+        skip-symbolic-links
+
+        [mysqldump]
+        max_allowed_packet              = 256M
+        quote_names
+        quick
+      Debian: |
+        [client]
+        default-character-set = utf8mb4
+        socket = /var/run/mysqld/mysqld.sock
+        [client-mariadb]
+        [mysql]
+        default-character-set = utf8mb4
+        [mysql_upgrade]
+        [mysqladmin]
+        [mysqlbinlog]
+        [mysqlcheck]
+        [mysqldump]
+        [mysqlimport]
+        [mysqlshow]
+        [mysqlslap]
+        [mysqld_safe]
+        socket		= {{ project_socket }}
+        nice		= 0
+        skip_log_error
+        syslog
+        [server]
+        [mysqld]
+        user		= mysql
+        pid-file	= /var/run/mysqld/mysqld.pid
+        socket		= {{ project_socket }}
+        port		= 3306
+        basedir		= /usr
+        datadir		= /var/lib/mysql
+        tmpdir		= /tmp
+        lc-messages-dir	= /usr/share/mysql
+        skip-external-locking
+        bind-address		= 127.0.0.1
+        key_buffer_size		= 16M
+        max_allowed_packet	= 16M
+        thread_stack		= 192K
+        thread_cache_size       = 8
+        myisam_recover_options  = BACKUP
+        query_cache_limit	= 1M
+        query_cache_size        = 16M
+        log_error = /var/log/mysql/error.log
+        expire_logs_days	= 10
+        max_binlog_size   = 100M
+        character-set-server  = utf8mb4
+        collation-server      = utf8mb4_general_ci
+        [embedded]
+        [mariadb]
+        [mariadb-10.1]
+    mariadb_config: "{{ os_mariadb_config[ansible_os_family] }}"
 
     mariadb_root_password: PassWord
     mariadb_root_conf:
@@ -79,6 +143,17 @@
     mariadb_users:
       - name: foo
         password: PassWord
+        # XXX on Ubuntu, the default authentication for `root` user is
+        # unix_socket.
+        # SELECT user,authentication_string,plugin,host FROM mysql.user;
+        # +------+-----------------------+-------------+-----------+
+        # | user | authentication_string | plugin      | host      |
+        # +------+-----------------------+-------------+-----------+
+        # | root |                       | unix_socket | localhost |
+        #
+        # see https://mariadb.com/kb/en/authentication-from-mariadb-104/
+
+        login_unix_socket: "{% if ansible_os_family == 'Debian' %}{{ project_socket }}{% else %}{{ omit }}{% endif %}"
     mariadb_my_cnf_files:
       - user: vagrant
         path: /home/vagrant/.my.cnf

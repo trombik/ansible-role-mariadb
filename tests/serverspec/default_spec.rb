@@ -1,8 +1,8 @@
 require "spec_helper"
 require "serverspec"
 
-package = "mysql"
-service = "mysql-server"
+package = "mariadb-server"
+service = "mariadb"
 config_dir = "/etc/mysql"
 user    = "mysql"
 group   = "mysql"
@@ -16,6 +16,7 @@ users = [
 case os[:family]
 when "freebsd"
   package = "databases/mariadb101-server"
+  service = "mysql-server"
   config_dir = "/usr/local/etc/mysql"
   db_dir = "/var/db/mysql"
 end
