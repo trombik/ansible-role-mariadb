@@ -79,3 +79,9 @@
     mariadb_users:
       - name: foo
         password: PassWord
+    mariadb_my_cnf_files:
+      - user: vagrant
+        path: /home/vagrant/.my.cnf
+        content: |
+          [client]
+          password = "PassWord"

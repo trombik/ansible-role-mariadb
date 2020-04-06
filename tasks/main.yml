@@ -52,3 +52,11 @@
     state: "{{ item.state | default(omit) }}"
     update_password: "{{ item.update_password | default(omit) }}"
   with_items: "{{ mariadb_users }}"
+
+- name: Create .my.cnf for local users
+  template:
+    src: user.my.cnf.j2
+    dest: "{{ item.path }}"
+    mode: 0600
+    owner: "{{ item.user }}"
+  with_items: "{{ mariadb_my_cnf_files }}"

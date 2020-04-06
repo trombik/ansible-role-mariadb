@@ -9,6 +9,10 @@ group   = "mysql"
 ports   = [3306]
 db_dir  = "/var/lib/mysql"
 
+users = [
+  { name: "foo", password: "PassWord" }
+]
+
 case os[:family]
 when "freebsd"
   package = "databases/mysql57-server"
@@ -62,4 +66,13 @@ describe command "env MYSQL_PWD=PassWord mysql -uroot -e 'SHOW DATABASES'" do
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
   its(:stdout) { should match(/^|\s+mysql\s+\|$/) }
+end
+
+describe file "/home/vagrant/.my.cnf" do
+  it { should exist }
+  it { should be_file }
+  it { should be_owned_by "vagrant" }
+  it { should be_mode 600 }
+  its(:content) { should match(/Managed by ansible/) }
+  its(:content) { should match(/^password = "PassWord"/) }
 end
