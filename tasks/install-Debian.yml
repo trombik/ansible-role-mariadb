@@ -24,6 +24,10 @@
     src: Debian.systemd.conf.j2
     # /etc/systemd/system/mariadb.service.d/MY_SPECIAL.conf
     dest: "/etc/systemd/system/{{ mariadb_service }}.service.d/default.conf"
+  register: __systemd_mariadb_conf
   notify:
     - Restart mariadb
-    - Reload systemd
+
+- name: Run systemd daemon_reload
+  command: systemctl daemon-reload
+  when: __systemd_mariadb_conf.changed

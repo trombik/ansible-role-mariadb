@@ -1,35 +1,43 @@
 ---
 - hosts: localhost
   roles:
-    - ansible-role-mariadb
+    - role: trombik.redhat_repo
+      when: ansible_os_family == 'RedHat'
+    - role: ansible-role-mariadb
   vars:
     mariadb_family: mysql
 
     os_mariadb_conf_file:
       FreeBSD: "{{ __mariadb_conf_file }}"
       Debian: "{{ mariadb_conf_dir }}/my.cnf"
+      RedHat: "{{ __mariadb_conf_file }}"
     mariadb_conf_file: "{{ os_mariadb_conf_file[ansible_os_family] }}"
     os_mariadb_package:
       FreeBSD: databases/mysql57-server
       Debian: mysql-server
+      RedHat: mysql-community-server
     mariadb_package: "{{ os_mariadb_package[ansible_os_family] }}"
     os_mariadb_service:
       FreeBSD: "{{ __mariadb_service }}"
       Debian: "mysql"
+      RedHat: "mysqld"
     mariadb_service: "{{ os_mariadb_service[ansible_os_family] }}"
     os_mariadb_flags:
       FreeBSD: ""
       Debian: |
         [Service]
+      RedHat: ""
     mariadb_flags: "{{ os_mariadb_flags[ansible_os_family] }}"
     os_project_socket:
       FreeBSD: /tmp/mysql.sock
       Debian: /var/run/mysqld/mysqld.sock
+      RedHat: /var/lib/mysql/mysql.sock
     project_socket: "{{ os_project_socket[ansible_os_family] }}"
 
     os_project_basedir:
       FreeBSD: /usr/local
       Debian: /usr
+      RedHat: ""
     project_basedir: "{{ os_project_basedir[ansible_os_family] }}"
 
     os_mariadb_config:
@@ -129,10 +137,16 @@
         log_error = /var/log/mysql/error.log
         expire_logs_days	= 10
         max_binlog_size   = 100M
+      RedHat: |
+        [mysqld]
+        datadir={{ mariadb_db_dir }}
+        socket={{ project_socket }}
+        log-error=/var/log/mysqld.log
+        pid-file=/var/run/mysqld/mysqld.pid
 
     mariadb_config: "{{ os_mariadb_config[ansible_os_family] }}"
 
-    mariadb_root_password: PassWord
+    mariadb_root_password: PassWord!!0238498^72
     mariadb_root_conf:
       name: root
       content: |
@@ -141,7 +155,7 @@
         password = "{{ mariadb_root_password }}"
     mariadb_users:
       - name: foo
-        password: PassWord
+        password: PassWord!!0238498^72
         # XXX on Ubuntu, the default authentication for `root` user is
         # auth_socket.
         # SELECT user,authentication_string,plugin,host FROM mysql.user;
@@ -160,4 +174,13 @@
         path: /home/vagrant/.my.cnf
         content: |
           [client]
-          password = "PassWord"
+          password = "PassWord!!0238498^72"
+
+    redhat_repo_extra_packages:
+      - epel-release
+      - https://repo.mysql.com/mysql80-community-release-el{{ ansible_distribution_major_version}}-1.noarch.rpm
+    redhat_repo:
+      epel:
+        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+        gpgcheck: yes
+        enabled: yes

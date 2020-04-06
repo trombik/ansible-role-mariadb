@@ -15,6 +15,10 @@ when "freebsd"
   config_dir = "/usr/local/etc/mysql"
   service = "mysql-server"
   # db_dir = "/var/db/mysql"
+when "redhat"
+  service = "mysqld"
+  package = "mysql-community-server"
+  config_dir = "/etc"
 end
 config = "#{config_dir}/my.cnf"
 
@@ -52,14 +56,14 @@ describe file "/root/.my.cnf" do
   it { should be_owned_by "root" }
   it { should be_mode 600 }
   its(:content) { should match(/Managed by ansible/) }
-  its(:content) { should match(/^password = "PassWord"/) }
+  its(:content) { should match(/^password = "#{Regexp.escape('PassWord!!0238498^72')}"/) }
 end
 
 describe file "/root/.mysql_secret" do
   it { should_not exist }
 end
 
-describe command "env MYSQL_PWD=PassWord mysql -uroot -e 'SHOW DATABASES'" do
+describe command "env MYSQL_PWD=PassWord!!0238498^72 mysql -uroot -e 'SHOW DATABASES'" do
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
   its(:stdout) { should match(/^|\s+mysql\s+\|$/) }
@@ -71,5 +75,5 @@ describe file "/home/vagrant/.my.cnf" do
   it { should be_owned_by "vagrant" }
   it { should be_mode 600 }
   its(:content) { should match(/Managed by ansible/) }
-  its(:content) { should match(/^password = "PassWord"/) }
+  its(:content) { should match(/^password = "#{Regexp.escape('PassWord!!0238498^72')}"/) }
 end
