@@ -1,33 +1,15 @@
 ---
-# tasks file for ansible-role-mariadb
 
-- include_vars: "{{ ansible_os_family }}.yml"
+- name: "Include vars/{{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
 
-- include: "install-{{ ansible_os_family }}.yml"
-
-- name: Create log directory
-  file:
-    path: "{{ mariadb_log_dir }}"
-    mode: 0755
-    owner: "{{ mariadb_user }}"
-    group: "{{ mariadb_group }}"
-    state: directory
-  notify: Restart mariadb
-
-- name: Create db directory
-  file:
-    path: "{{ mariadb_db_dir }}"
-    mode: 0755
-    owner: "{{ mariadb_user }}"
-    group: "{{ mariadb_group }}"
-    state: directory
-  notify: Restart mariadb
+- name: "Include tasks/install-{{ ansible_os_family }}.yml"
+  include: "install-{{ ansible_os_family }}.yml"
 
 - name: Create mariadb.conf
   template:
-    src: mariadb.conf.j2
+    src: my.cnf.j2
     dest: "{{ mariadb_conf_file }}"
-    validate: echo %s
   notify: Restart mariadb
 
 - name: Start mariadb
@@ -35,3 +17,38 @@
     name: "{{ mariadb_service }}"
     enabled: true
     state: started
+
+- name: Wait for mariadb
+  wait_for:
+    port: 3306
+
+- name: Include set-root-password
+  include_tasks: set-root-password.yml
+
+- name: Do flush_handlers
+  meta: flush_handlers
+
+- name: Create database users
+  mysql_user:
+    append_privs: "{{ item.append_privs | default(omit) }}"
+    ca_cert: "{{ item.ca_cert | default(omit) }}"
+    check_implicit_admin: "{{ item.check_implicit_admin | default(omit) }}"
+    client_cert: "{{ item.client_cert | default(omit) }}"
+    client_key: "{{ item.client_key | default(omit) }}"
+    config_file: "{{ item.config_file | default(omit) }}"
+    connect_timeout: "{{ item.connect_timeout | default(omit) }}"
+    encrypted: "{{ item.encrypted | default(omit) }}"
+    host: "{{ item.host | default(omit) }}"
+    host_all: "{{ item.host_all | default(omit) }}"
+    login_host: "{{ item.login_host | default(omit) }}"
+    login_password: "{{ item.login_password | default(mariadb_root_password) }}"
+    login_port: "{{ item.login_port | default(omit) }}"
+    login_unix_socket: "{{ item.login_unix_socket | default(omit) }}"
+    login_user: "{{ item.login_user | default(omit) }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password | default(omit) }}"
+    priv: "{{ item.priv | default(omit) }}"
+    sql_log_bin: "{{ item.sql_log_bin | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    update_password: "{{ item.update_password | default(omit) }}"
+  with_items: "{{ mariadb_users }}"

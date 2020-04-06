@@ -1,9 +1,14 @@
 ---
-mariadb_user: mariadb
-mariadb_group: mariadb
+mariadb_user: "{{ __mariadb_user }}"
+mariadb_group: "{{ __mariadb_group }}"
 mariadb_log_dir: /var/log/mariadb
 mariadb_db_dir: "{{ __mariadb_db_dir }}"
-mariadb_service: mariadb
+mariadb_service: "{{ __mariadb_service }}"
+mariadb_package: "{{ __mariadb_package }}"
+mariadb_ansible_packages: "{{ __mariadb_ansible_packages }}"
 mariadb_conf_dir: "{{ __mariadb_conf_dir }}"
-mariadb_conf_file: "{{ __mariadb_conf_dir }}/mariadb.conf"
+mariadb_conf_file: "{{ __mariadb_conf_dir }}/my.cnf"
+mariadb_config: ""
 mariadb_flags: ""
+
+mariadb_root_password: ""

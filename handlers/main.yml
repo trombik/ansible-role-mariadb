@@ -2,5 +2,12 @@
 
 - name: Restart mariadb
   service:
-    name: mariadb
+    name: "{{ mariadb_service }}"
     state: restarted
+  notify:
+    - Wait for mariadb
+
+- name: Wait for mariadb
+  wait_for:
+    delay: 5
+    port: 3306

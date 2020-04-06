@@ -2,5 +2,22 @@
 
 - name: Install mariadb
   pkgng:
-    name: mariadb
+    name: "{{ mariadb_package }}"
     state: present
+
+- name: Install mariadb_ansible_packages, required by ansible
+  pkgng:
+    name: "{{ mariadb_ansible_packages }}"
+
+- name: Enable mariadb
+  service:
+    name: "{{ mariadb_service }}"
+    enabled: yes
+
+- name: Create rc.subr file
+  template:
+    src: FreeBSD.rc.j2
+    dest: "/etc/rc.conf.d/{{ mariadb_service | regex_replace('-', '_') }}"
+    validate: sh -n %s
+  notify:
+    - Restart mariadb
