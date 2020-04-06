@@ -15,6 +15,8 @@ when "freebsd"
   service = "mysql-server"
   config_dir = "/usr/local/etc/mysql"
   # db_dir = "/var/db/mysql"
+when "redhat"
+  config_dir = "/etc"
 end
 config = "#{config_dir}/my.cnf"
 

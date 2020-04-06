@@ -1,0 +1,11 @@
+---
+__mariadb_user: mysql
+__mariadb_group: mysql
+__mariadb_package: mariadb-server
+__mariadb_ansible_packages:
+  - python2-PyMySQL
+__mariadb_service: mariadb
+__mariadb_db_dir: /var/lib/mysql
+__mariadb_conf_dir: /etc
+__mariadb_conf_file: "{{ __mariadb_conf_dir }}/my.cnf"
+__mariadb_family: mariadb

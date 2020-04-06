@@ -1,21 +1,26 @@
 ---
 - hosts: localhost
   roles:
-    - ansible-role-mariadb
+    - role: trombik.redhat_repo
+      when: ansible_os_family == 'RedHat'
+    - role: ansible-role-mariadb
   vars:
     os_mariadb_flags:
       FreeBSD: ""
       Debian: |
         [Service]
+      RedHat: ""
     mariadb_flags: "{{ os_mariadb_flags[ansible_os_family] }}"
     os_project_socket:
       FreeBSD: /tmp/mysql.sock
       Debian: /var/run/mysqld/mysqld.sock
+      RedHat: /var/lib/mysql/mysql.sock
     project_socket: "{{ os_project_socket[ansible_os_family] }}"
 
     os_project_basedir:
       FreeBSD: /usr/local
       Debian: /usr
+      RedHat: ""
     project_basedir: "{{ os_project_basedir[ansible_os_family] }}"
 
     os_mariadb_config:
@@ -131,6 +136,15 @@
         [embedded]
         [mariadb]
         [mariadb-10.1]
+      RedHat: |
+        [mysqld]
+        datadir={{ mariadb_db_dir }}
+        socket={{ project_socket }}
+        symbolic-links=0
+        [mysqld_safe]
+        log-error=/var/log/mariadb/mariadb.log
+        pid-file=/var/run/mariadb/mariadb.pid
+
     mariadb_config: "{{ os_mariadb_config[ansible_os_family] }}"
 
     mariadb_root_password: PassWord
@@ -160,3 +174,11 @@
         content: |
           [client]
           password = "PassWord"
+
+    redhat_repo_extra_packages:
+      - epel-release
+    redhat_repo:
+      epel:
+        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+        gpgcheck: yes
+        enabled: yes
