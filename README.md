@@ -1,6 +1,6 @@
-# ansible-role-mariadb
+# trombik.mariadb
 
-A brief description of the role goes here.
+`ansible` role for `maraidb` and `mysql`.
 
 # Requirements
 
