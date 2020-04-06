@@ -52,5 +52,4 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/mysql_spec.rb
-    excludes:
-      - ubuntu-18.04-amd64
+    excludes: []
