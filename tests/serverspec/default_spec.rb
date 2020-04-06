@@ -4,23 +4,19 @@ require "serverspec"
 package = "mariadb-server"
 service = "mariadb"
 config_dir = "/etc/mysql"
-user    = "mysql"
-group   = "mysql"
-ports   = [3306]
-db_dir  = "/var/lib/mysql"
-
-users = [
-  { name: "foo", password: "PassWord" }
-]
+# user    = "mysql"
+# group   = "mysql"
+ports = [3306]
+# db_dir  = "/var/lib/mysql"
 
 case os[:family]
 when "freebsd"
   package = "databases/mariadb101-server"
   service = "mysql-server"
   config_dir = "/usr/local/etc/mysql"
-  db_dir = "/var/db/mysql"
+  # db_dir = "/var/db/mysql"
 end
-config  = "#{config_dir}/my.cnf"
+config = "#{config_dir}/my.cnf"
 
 describe package(package) do
   it { should be_installed }
@@ -33,7 +29,7 @@ end
 
 case os[:family]
 when "freebsd"
-  describe file("/etc/rc.conf.d/#{service.gsub('-', '_')}") do
+  describe file("/etc/rc.conf.d/#{service.tr('-', '_')}") do
     it { should be_file }
     its(:content) { should match Regexp.escape("Managed by ansible") }
   end
