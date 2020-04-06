@@ -2,6 +2,11 @@
 
 `ansible` role for `maraidb` and `mysql`.
 
+## Note for CentOS users
+
+When using MySQL 8.0, idempotency test fails due to a bug in `mysql_user`
+`ansible` module.
+
 # Requirements
 
 None

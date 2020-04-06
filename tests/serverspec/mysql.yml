@@ -146,6 +146,9 @@
 
     mariadb_config: "{{ os_mariadb_config[ansible_os_family] }}"
 
+    # XXX use complicated password instead of PassWord because MySQL 8.0
+    # enforces password policy, and there seems to be no way to disable it
+    # upon initial installation.
     mariadb_root_password: PassWord!!0238498^72
     mariadb_root_conf:
       name: root
