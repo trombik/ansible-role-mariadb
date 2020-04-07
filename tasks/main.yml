@@ -18,6 +18,18 @@
     dest: "{{ mariadb_conf_file }}"
   notify: Restart mariadb
 
+- name: Create mariadb_log_dir
+  file:
+    path: "{{ mariadb_log_dir }}"
+    owner: "{{ mariadb_user }}"
+    group: "{{ mariadb_group }}"
+    mode: 0755
+    state: directory
+  # do not do anything with system log directory.
+  when: mariadb_log_dir != '/var/log'
+  notify:
+    - Restart mariadb
+
 - name: Start mariadb
   service:
     name: "{{ mariadb_service }}"

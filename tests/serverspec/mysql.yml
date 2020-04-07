@@ -57,6 +57,7 @@
         bind-address                    = 127.0.0.1
         basedir                         = {{ project_basedir }}
         datadir                         = {{ mariadb_db_dir }}
+        log_error                       = {{ mariadb_log_file }}
         tmpdir                          = /var/db/mysql_tmpdir
         slave-load-tmpdir               = /var/db/mysql_tmpdir
         secure-file-priv                = /var/db/mysql_secure
@@ -113,13 +114,13 @@
         quote-names
         max_allowed_packet	= 16M
         [mysqld_safe]
-        socket		= /var/run/mysqld/mysqld.sock
+        socket		= {{ project_socket }}
         nice		= 0
         syslog
         [mysqld]
         user		= mysql
         pid-file	= /var/run/mysqld/mysqld.pid
-        socket		= /var/run/mysqld/mysqld.sock
+        socket		= {{ project_socket }}
         port		= 3306
         basedir		= /usr
         datadir		= /var/lib/mysql
@@ -134,14 +135,15 @@
         myisam-recover-options  = BACKUP
         query_cache_limit	= 1M
         query_cache_size        = 16M
-        log_error = /var/log/mysql/error.log
+        log_error = {{ mariadb_log_file }}
         expire_logs_days	= 10
         max_binlog_size   = 100M
       RedHat: |
         [mysqld]
+        bind-address=127.0.0.1
         datadir={{ mariadb_db_dir }}
         socket={{ project_socket }}
-        log-error=/var/log/mysqld.log
+        log-error={{ mariadb_log_file }}
         pid-file=/var/run/mysqld/mysqld.pid
 
     mariadb_config: "{{ os_mariadb_config[ansible_os_family] }}"

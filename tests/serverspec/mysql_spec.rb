@@ -4,10 +4,12 @@ require "serverspec"
 package = "mysql-server"
 service = "mysql"
 config_dir = "/etc/mysql"
-# user    = "mysql"
-# group   = "mysql"
+user    = "mysql"
+group   = "mysql"
 ports = [3306]
 # db_dir  = "/var/lib/mysql"
+log_dir = "/var/log/mysql"
+log_file = "#{log_dir}/error.log"
 
 case os[:family]
 when "freebsd"
@@ -19,6 +21,8 @@ when "redhat"
   service = "mysqld"
   package = "mysql-community-server"
   config_dir = "/etc"
+  log_dir = "/var/log"
+  log_file = "#{log_dir}/mysqld.log"
 end
 config = "#{config_dir}/my.cnf"
 
@@ -37,6 +41,29 @@ when "freebsd"
     it { should be_file }
     its(:content) { should match Regexp.escape("Managed by ansible") }
   end
+end
+
+if log_dir != "/var/log"
+  describe file log_dir do
+    it { should exist }
+    it { should be_directory }
+    it { should be_owned_by user }
+    it { should be_grouped_into group }
+    it { should be_mode 755 }
+  end
+end
+
+describe file "#{log_file}" do
+  it { should exist }
+  it { should be_file }
+  it { should be_owned_by user }
+  case os[:family]
+  when "ubuntu"
+    it { should be_grouped_into "adm" }
+  else
+    it { should be_grouped_into group }
+  end
+  it { should be_mode 640 }
 end
 
 describe service(service) do

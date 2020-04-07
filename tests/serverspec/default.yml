@@ -23,6 +23,18 @@
       RedHat: ""
     project_basedir: "{{ os_project_basedir[ansible_os_family] }}"
 
+    os_mariadb_log_dir:
+      FreeBSD: "{{ __mariadb_log_dir }}"
+      Debian: "{{ __mariadb_log_dir }}"
+      RedHat: /var/log/mysqld
+    mariadb_log_dir: "{{ os_mariadb_log_dir[ansible_os_family] }}"
+
+    os_mariadb_log_file:
+      FreeBSD: "{{ __mariadb_log_file }}"
+      Debian: "{{ __mariadb_log_file }}"
+      RedHat: "{{ mariadb_log_dir }}/mariadb.log"
+    mariadb_log_file: "{{ os_mariadb_log_file[ansible_os_family] }}"
+
     os_mariadb_config:
       FreeBSD: |
         [client]
@@ -40,6 +52,7 @@
         bind-address                    = 127.0.0.1
         basedir                         = {{ project_basedir }}
         datadir                         = {{ mariadb_db_dir }}
+        log_error                       = {{ mariadb_log_dir }}/error.log
         # tmpdir                          = /var/db/mysql_tmpdir
         # slave-load-tmpdir               = /var/db/mysql_tmpdir
         # secure-file-priv                = /var/db/mysql_secure
@@ -128,7 +141,7 @@
         myisam_recover_options  = BACKUP
         query_cache_limit	= 1M
         query_cache_size        = 16M
-        log_error = /var/log/mysql/error.log
+        log_error = {{ mariadb_log_file }}
         expire_logs_days	= 10
         max_binlog_size   = 100M
         character-set-server  = utf8mb4
@@ -141,8 +154,9 @@
         datadir={{ mariadb_db_dir }}
         socket={{ project_socket }}
         symbolic-links=0
+        log-error={{ mariadb_log_file }}
         [mysqld_safe]
-        log-error=/var/log/mariadb/mariadb.log
+        log-error={{ mariadb_log_dir }}/mariadb.log
         pid-file=/var/run/mariadb/mariadb.pid
 
     mariadb_config: "{{ os_mariadb_config[ansible_os_family] }}"
