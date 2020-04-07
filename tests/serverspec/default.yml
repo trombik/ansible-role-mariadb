@@ -38,7 +38,7 @@
     os_mariadb_config:
       FreeBSD: |
         [client]
-        port                            = 3306
+        port                            = {{ mariadb_port }}
         socket                          = {{ project_socket }}
 
         [mysql]
@@ -46,7 +46,7 @@
         no_auto_rehash
 
         [mysqld]
-        user                            = mysql
+        user                            = {{ mariadb_user }}
         port                            = {{ mariadb_port }}
         socket                          = {{ project_socket }}
         bind-address                    = {{ mariadb_host }}
@@ -105,7 +105,7 @@
       Debian: |
         [client]
         default-character-set = utf8mb4
-        socket = /var/run/mysqld/mysqld.sock
+        socket = {{ project_socket }}
         [client-mariadb]
         [mysql]
         default-character-set = utf8mb4

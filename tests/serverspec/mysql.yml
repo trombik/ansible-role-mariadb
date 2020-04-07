@@ -43,7 +43,7 @@
     os_mariadb_config:
       FreeBSD: |
         [client]
-        port                            = 3306
+        port                            = {{ mariadb_port }}
         socket                          = {{ project_socket }}
 
         [mysql]
