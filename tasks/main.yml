@@ -38,7 +38,8 @@
 
 - name: Wait for mariadb
   wait_for:
-    port: 3306
+    port: "{{ mariadb_port }}"
+    host: "{{ mariadb_host }}"
 
 - name: Do flush_handlers
   meta: flush_handlers
