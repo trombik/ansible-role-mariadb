@@ -10,7 +10,8 @@
 - name: Wait for mariadb
   wait_for:
     delay: 5
-    port: 3306
+    port: "{{ mariadb_port }}"
+    host: "{{ mariadb_host }}"
 
 - name: Reload systemd
   command: systemctl daemon-reload

@@ -11,7 +11,8 @@ mariadb_conf_dir: "{{ __mariadb_conf_dir }}"
 mariadb_conf_file: "{{ __mariadb_conf_file }}"
 mariadb_config: ""
 mariadb_flags: ""
-
+mariadb_port: 3306
+mariadb_host: 127.0.0.1
 mariadb_root_password: ""
 mariadb_my_cnf_files: []
 mariadb_family: "{{ __mariadb_family }}"
