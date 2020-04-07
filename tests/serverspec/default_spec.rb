@@ -51,7 +51,7 @@ if log_dir != "/var/log"
   end
 end
 
-describe file "#{log_file}" do
+describe file log_file.to_s do
   it { should exist }
   it { should be_file }
   it { should be_owned_by user }
