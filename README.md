@@ -7,6 +7,9 @@
 When using MySQL 8.0, idempotency test fails due to a bug in `mysql_user`
 `ansible` module.
 
+Due to a bug in pre-start script, you cannot change `mariadb_log_file` when
+`mariadb_family` is `mysql`.
+
 # Requirements
 
 None

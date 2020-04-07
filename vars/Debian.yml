@@ -1,6 +1,8 @@
 ---
 __mariadb_user: mysql
 __mariadb_group: mysql
+__mariadb_log_dir: /var/log/mysql
+__mariadb_log_file: "{{ __mariadb_log_dir }}/error.log"
 __mariadb_package: mariadb-server
 __mariadb_ansible_packages:
   - python-pymysql

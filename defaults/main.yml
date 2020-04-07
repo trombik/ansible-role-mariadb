@@ -1,7 +1,8 @@
 ---
 mariadb_user: "{{ __mariadb_user }}"
 mariadb_group: "{{ __mariadb_group }}"
-mariadb_log_dir: /var/log/mariadb
+mariadb_log_dir: "{{ __mariadb_log_dir }}"
+mariadb_log_file: "{{ __mariadb_log_file }}"
 mariadb_db_dir: "{{ __mariadb_db_dir }}"
 mariadb_service: "{{ __mariadb_service }}"
 mariadb_package: "{{ __mariadb_package }}"
