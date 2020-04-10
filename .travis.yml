@@ -88,7 +88,7 @@ script:
   - bundle exec rubocop
 
   # run yamllint
-  - yamllint -c .yamllint.yml .
+  - yamllint -s -c .yamllint.yml .
 
   # run the QA test
   - qansible qa
@@ -104,4 +104,6 @@ script:
     fi
 
 notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  webhooks:
+    - https://galaxy.ansible.com/api/v1/notifications/
+    - https://www.travisbuddy.com/
